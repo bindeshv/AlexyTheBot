@@ -1,20 +1,21 @@
 ﻿using Microsoft.Azure.CognitiveServices.Search.EntitySearch;
 using Microsoft.Azure.CognitiveServices.Search.EntitySearch.Models;
+using SimpleEchoBot.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
-namespace SimpleEchoBot
+namespace SimpleEchoBot.Services
 {
-    public static class BingSearch
+    public static class BingEntitySearch
     {
 
         private static EntitySearchAPI entitySearchAPI = new EntitySearchAPI(new
-                ApiKeyServiceClientCredentials("97ffb5f584bc499d8dffada8f97ed45f"));
+                ApiKeyServiceClientCredentials("628767743b5b4967a539705afbee6870"));
         //8ffc62fb0c0745d9934f24916d776046
-        public static string SearchForPerson(string personName)
+        public static Person SearchForPerson(string personName)
         {
 
 
@@ -22,12 +23,12 @@ namespace SimpleEchoBot
             Debug.Write(entityData);
             if (entityData?.Entities?.Value?.Count > 0)
             {
-                var mainEntity = entityData.Entities.Value.Where(thing => thing.EntityPresentationInfo.EntityScenario == EntityScenario.DominantEntity).FirstOrDefault();
+                Thing mainEntity = entityData.Entities.Value.Where(thing => thing.EntityPresentationInfo.EntityScenario == EntityScenario.DominantEntity).FirstOrDefault();
 
                 if (mainEntity != null)
                 {
                     Debug.WriteLine($"response=== {mainEntity}");
-                    return mainEntity.Description;
+                    return new Person { Name = mainEntity.Name, Description = mainEntity.Description, ImageUrl = mainEntity.Image.ThumbnailUrl };
 
                 }
             }
