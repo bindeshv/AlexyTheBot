@@ -182,6 +182,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Dialogs\BookInsuranceDialog.cs" />
+    <Compile Include="Dialogs\ExceptionHandlerDialog.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Services\BingEntitySearch.cs" />
     <Compile Include="Controllers\MessagesController.cs" />

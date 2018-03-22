@@ -14,14 +14,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using SimpleEchoBot.Services;
+using System.Threading;
 
 namespace SimpleEchoBot.Dialogs
 {
     [Serializable]
     public class RootLuisDialog : LuisDialog<object>
     {
-
-       
 
         public RootLuisDialog() : base(new LuisService(new LuisModelAttribute(
             ConfigurationManager.AppSettings["LuisAppId"],
@@ -47,14 +46,34 @@ namespace SimpleEchoBot.Dialogs
         //    context.Wait(this.MessageReceived);
         //}
 
+        [LuisIntent("Insurance")]
+        public async Task Insure(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+        {
+            var message = await activity;
+            await context.PostAsync("ok..");
+            EntityRecommendation entity;
+
+            if (result.TryFindEntity("Insure.Car", out entity))
+            {
+                Debug.WriteLine("starting car insurance dialog");
+
+                await context.Forward(new BookInsuranceDialog(), AfterConfirm, new Activity { Text = result.Query}, CancellationToken.None);
+
+
+            }
+
+        }
+
+        
+
         [LuisIntent("People")]
         public async Task People(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
             var message = await activity;
-            await context.PostAsync($"I am analyzing your query..be right back!");
+            await context.PostAsync($"looking up..");
             EntityRecommendation entity;
 
-            if (result.TryFindEntity("People.Info",out entity))
+            if (result.TryFindEntity("People.Info", out entity))
             {
                 //if we got the query for who is XYZ 
                 var entities = result.Entities;
@@ -86,22 +105,23 @@ namespace SimpleEchoBot.Dialogs
                     }
                 }
 
-            }else if( result.TryFindEntity("People.Images", out entity))
+            }
+            else if (result.TryFindEntity("People.Images", out entity))
             {
                 string imageName = result.Entities.Where(e => e.Type == "People.Name").FirstOrDefault().Entity;
 
-                if( imageName != null)
+                if (imageName != null)
                 {
                     var imgList = BingImageSearch.SearchImages(imageName);
-                   if (imgList != null) 
+                    if (imgList != null)
                     {
                         await context.PostAsync("Here is what i found...");
                         //take 5 images                      
-                       
+
                         var convMessage = context.MakeMessage();
                         convMessage.Attachments = BuildImageListCard(imgList, imageName);
                         convMessage.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                     
+
                         await context.PostAsync(convMessage);
 
                     }
@@ -110,7 +130,8 @@ namespace SimpleEchoBot.Dialogs
                         await context.PostAsync($"sorry didn't find any image for- {imageName}");
                     }
 
-                }else
+                }
+                else
                 {
                     await context.PostAsync("I didn't get the image that you're interested in");
                     await context.PostAsync("Try something like 'find pics of Ed Sheeran'");
@@ -125,10 +146,16 @@ namespace SimpleEchoBot.Dialogs
 
         }
 
-        private List<Attachment> BuildImageListCard(List<Image>images, string imageQuery)
+
+        private async Task AfterConfirm(IDialogContext context, IAwaitable<object> item )
+        {
+            context.Wait(this.MessageReceived);
+        }
+
+        private List<Attachment> BuildImageListCard(List<Image> images, string imageQuery)
         {
             List<Attachment> attachments = new List<Attachment>();
-           
+
             foreach (var img in images)
             {
                 HeroCard plCard = new HeroCard();
@@ -140,9 +167,9 @@ namespace SimpleEchoBot.Dialogs
 
             }
 
-           
-            
-            return attachments; 
+
+
+            return attachments;
         }
 
         private AdaptiveCard BuildAdaptivePersonCard(Person person)
@@ -152,8 +179,8 @@ namespace SimpleEchoBot.Dialogs
             {
                 Text = person.Description,
                 Size = AdaptiveTextSize.Medium,
-                Wrap = true 
-                
+                Wrap = true
+
             });
 
             card.Body.Add(new AdaptiveImage()
@@ -161,7 +188,7 @@ namespace SimpleEchoBot.Dialogs
                 Url = new Uri(person.ImageUrl)
             });
 
-            return card; 
+            return card;
         }
     }
 }
