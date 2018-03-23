@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using Microsoft.Cognitive.CustomVision.Prediction;
 using System.IO;
 
-namespace SimpleEchoBot.Dialogs
+namespace SimpleEchoBot.Services
 {
     public static class CustomVisionService
     {

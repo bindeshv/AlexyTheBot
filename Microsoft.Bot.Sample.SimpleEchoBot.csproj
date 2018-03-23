@@ -71,6 +71,9 @@
     <Reference Include="Microsoft.Azure.CognitiveServices.Search.ImageSearch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Azure.CognitiveServices.Search.ImageSearch.1.1.0-preview\lib\net452\Microsoft.Azure.CognitiveServices.Search.ImageSearch.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.CognitiveServices.Search.WebSearch, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Azure.CognitiveServices.Search.WebSearch.1.2.0\lib\net452\Microsoft.Azure.CognitiveServices.Search.WebSearch.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.Documents.Client, Version=1.21.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Azure.DocumentDB.1.21.1\lib\net45\Microsoft.Azure.Documents.Client.dll</HintPath>
     </Reference>
@@ -202,7 +205,8 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Dialogs\BookInsuranceDialog.cs" />
-    <Compile Include="Dialogs\CustomVisionService.cs" />
+    <Compile Include="Services\BingWebSearch.cs" />
+    <Compile Include="Services\CustomVisionService.cs" />
     <Compile Include="Dialogs\ExceptionHandlerDialog.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Services\BingEntitySearch.cs" />

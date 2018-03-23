@@ -7,6 +7,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using SimpleEchoBot.Services;
+using AdaptiveCards;
+using Microsoft.Azure.CognitiveServices.Search.WebSearch.Models;
 
 namespace SimpleEchoBot.Dialogs
 {
@@ -53,6 +56,20 @@ namespace SimpleEchoBot.Dialogs
                     if (resp != null)
                     {
                         Debug.WriteLine($"prediction response {resp}");
+                        //we got the image recognized from cog custom service 
+                        var webresult = await BingWebSearch.SearchWeb(resp + " insurance bangalore");
+                        //once the result is there build the card 
+                        var adaptiveCards = BuildCard(webresult);
+                        var reply = context.MakeMessage();
+                        reply.Attachments = adaptiveCards;
+                        reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                        await context.PostAsync(reply);
+
+
+                    }else
+                    {
+                        await context.PostAsync("Sorry, I didn't recognize the image");
+                       
                     }
                 }
                 catch(Exception ex)
@@ -76,6 +93,53 @@ namespace SimpleEchoBot.Dialogs
             }
         }
 
+
+        private List<Attachment> BuildCard(List<WebPage> resp)
+        {
+            List<Attachment> cardAttachments = new List<Attachment>();
+            foreach(var p in resp)
+            {
+                AdaptiveCard card = new AdaptiveCard();
+                //card.Body.Add(new AdaptiveImage()
+                //{
+                //    Url = new Uri(p.Image.ThumbnailUrl)
+                //});
+
+                card.Body.Add(new AdaptiveTextBlock()
+                {
+                    Text = p.Name,
+                    Size = AdaptiveTextSize.Large,
+                    Wrap = false,
+                    Separator = true
+
+
+                });
+
+                card.Body.Add(new AdaptiveTextBlock()
+                {
+                    Text = p.Snippet.Substring(0, 50),
+                    Size = AdaptiveTextSize.Default,
+                    Wrap = false
+
+                });
+
+               
+                card.Actions.Add(new AdaptiveOpenUrlAction()
+                {
+                    Url = new Uri(p.Url),
+                    Title = "More"
+                }
+                );
+
+                Attachment attachment = new Attachment()
+                {
+                    ContentType = AdaptiveCard.ContentType,
+                    Content = card
+                };
+                cardAttachments.Add(attachment);
+            }
+            return cardAttachments;
+        }
 
     }
 }
