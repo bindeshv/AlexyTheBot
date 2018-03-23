@@ -34,17 +34,32 @@ namespace SimpleEchoBot.Dialogs
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            string message = $"Sorry, I did not understand '{result.Query}'. Type 'help' if you need assistance.";
+            string message = $"Sorry, I did not understand '{result.Query}'";
             await context.PostAsync(message);
             context.Wait(this.MessageReceived);
         }
 
-        //[LuisIntent("Help")]
-        //public async Task Help(IDialogContext context, LuisResult result)
-        //{
-        //    await context.PostAsync("Hi! Try asking me things like , 'search hotels near LAX airport','who is Selena Gomez?'or 'show me the reviews of The Bot Resort'");
-        //    context.Wait(this.MessageReceived);
-        //}
+        [LuisIntent("Greeting")]
+        public async Task Help(IDialogContext context, LuisResult result)
+        {
+            EntityRecommendation entity; 
+            if(result.TryFindEntity("Greeting.Hello", out entity))
+            {
+                await context.PostAsync("Hi there!");
+            }
+
+            if(result.TryFindEntity("Greeting.WhoAmI", out entity))
+            {
+                await context.PostAsync("I am Alexy..");
+                await context.PostAsync("An Intelligent Bot powered by Microsoft Cognitive Services!");
+            }
+
+            if(result.TryFindEntity("Greeting.Question", out entity))
+            {
+                await context.PostAsync("I am doing very good. Thanks for asking!");
+            }
+            context.Wait(this.MessageReceived);
+        }
 
         [LuisIntent("Insurance")]
         public async Task Insure(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
@@ -175,6 +190,10 @@ namespace SimpleEchoBot.Dialogs
         private AdaptiveCard BuildAdaptivePersonCard(Person person)
         {
             AdaptiveCard card = new AdaptiveCard();
+            card.Body.Add(new AdaptiveImage()
+            {
+                Url = new Uri(person.ImageUrl)
+            });
             card.Body.Add(new AdaptiveTextBlock()
             {
                 Text = person.Description,
@@ -183,10 +202,15 @@ namespace SimpleEchoBot.Dialogs
 
             });
 
-            card.Body.Add(new AdaptiveImage()
+            card.Actions.Add(new AdaptiveOpenUrlAction()
             {
-                Url = new Uri(person.ImageUrl)
+                Url = new Uri(person.Url),
+                Title = "More"
             });
+
+
+
+           
 
             return card;
         }

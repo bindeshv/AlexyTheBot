@@ -117,9 +117,9 @@ namespace SimpleEchoBot.Dialogs
 
                 card.Body.Add(new AdaptiveTextBlock()
                 {
-                    Text = p.Snippet.Substring(0, 50),
+                    Text = p.Snippet.Substring(0, 100),
                     Size = AdaptiveTextSize.Default,
-                    Wrap = false
+                    Wrap = true
 
                 });
 

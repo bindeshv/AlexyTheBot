@@ -28,7 +28,7 @@ namespace SimpleEchoBot.Services
                 if (mainEntity != null)
                 {
                     Debug.WriteLine($"response=== {mainEntity}");
-                    return new Person { Name = mainEntity.Name, Description = mainEntity.Description, ImageUrl = mainEntity.Image.ThumbnailUrl };
+                    return new Person { Name = mainEntity.Name, Url = mainEntity.WebSearchUrl, Description = mainEntity.Description, ImageUrl = mainEntity.Image.ThumbnailUrl };
 
                 }
             }
