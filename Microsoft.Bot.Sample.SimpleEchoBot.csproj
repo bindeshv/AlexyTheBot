@@ -205,6 +205,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Dialogs\BookInsuranceDialog.cs" />
+    <Compile Include="Dialogs\LookupRestaurantDialog.cs" />
     <Compile Include="Services\BingWebSearch.cs" />
     <Compile Include="Services\CustomVisionService.cs" />
     <Compile Include="Dialogs\ExceptionHandlerDialog.cs" />

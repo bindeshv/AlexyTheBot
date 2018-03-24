@@ -71,14 +71,28 @@ namespace SimpleEchoBot.Dialogs
             if (result.TryFindEntity("Insure.Car", out entity))
             {
                 Debug.WriteLine("starting car insurance dialog");
-
                 await context.Forward(new BookInsuranceDialog(), AfterConfirm, new Activity { Text = result.Query}, CancellationToken.None);
-
-
             }
 
         }
 
+
+        [LuisIntent("Restaurants")]
+        public async Task Restaurant(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+        {
+            var message = await activity;
+            await context.PostAsync($"looking up..");
+            EntityRecommendation entity;
+            if(result.TryFindEntity("Restaurants.Nearby", out entity))
+            {
+                Debug.WriteLine("starting restaurant lookup dialog");
+                await context.Forward(new LookupRestaurantDialog(), AfterConfirm, new Activity { Text = result.Query }, CancellationToken.None);
+
+            }else
+            {
+                Debug.WriteLine("restaurants no entity found");
+            }
+        }
         
 
         [LuisIntent("People")]
