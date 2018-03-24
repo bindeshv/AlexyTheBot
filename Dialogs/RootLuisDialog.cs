@@ -50,8 +50,8 @@ namespace SimpleEchoBot.Dialogs
 
             if(result.TryFindEntity("Greeting.WhoAmI", out entity))
             {
-                await context.PostAsync("I am Alexy..");
-                await context.PostAsync("An Intelligent Bot powered by Microsoft Cognitive Services!");
+                await context.PostAsync("I am Alexy! An Intelligent Bot powered by Microsoft Cognitive Services!");
+                //await context.PostAsync("An Intelligent Bot powered by Microsoft Cognitive Services!");
             }
 
             if(result.TryFindEntity("Greeting.Question", out entity))
